@@ -1,5 +1,5 @@
 name:                tmp-postgres
-version:             1.34.1.0
+version:             1.35.0.0
 synopsis: Start and stop a temporary postgres
 description: Start and stop a temporary postgres. See README.md
 homepage:            https://github.com/jfischoff/tmp-postgres#readme
@@ -40,7 +40,6 @@ library
     , ViewPatterns
   build-depends: base >= 4.6 && < 5
                , base64-bytestring
-               , ansi-wl-pprint
                , async
                , bytestring
                , containers
@@ -51,6 +50,7 @@ library
                , port-utils
                , postgres-options >= 0.2.0.0
                , postgresql-simple
+               , prettyprinter
                , process >= 1.2.0.0
                , stm
                , temporary

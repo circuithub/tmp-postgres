@@ -19,10 +19,10 @@ import           Data.ByteString (ByteString)
 import qualified Data.Map.Strict as Map
 import qualified Database.PostgreSQL.Simple.Options as Client
 import           GHC.Generics
+import           Prettyprinter
 import           System.Exit (ExitCode(..))
 import           System.IO.Unsafe (unsafePerformIO)
 import           System.Process
-import           Text.PrettyPrint.ANSI.Leijen hiding ((<$>))
 import           System.Directory
 
 -- | Handle for holding temporary resources, the @postgres@ process handle
@@ -40,11 +40,11 @@ data DB = DB
 
 instance Pretty DB where
   pretty DB {..}
-    =  text "dbResources"
+    =  "dbResources"
     <> softline
     <> indent 2 (pretty dbResources)
     <> hardline
-    <> text "dbPostgresProcess"
+    <> "dbPostgresProcess"
     <> softline
     <> indent 2 (pretty dbPostgresProcess)
 
@@ -180,8 +180,8 @@ custom 'Config' like the following.
 @
 custom = defaultConfig <> mempty
   { 'postgresConfigFile' =
-      [ ("wal_level, "replica")
-      , ("archive_mode", on")
+      [ ("wal_level", "replica")
+      , ("archive_mode", "on")
       , ("max_wal_senders", "2")
       , ("fsync", "on")
       , ("synchronous_commit", "on")
@@ -433,8 +433,14 @@ withRestart db f = bracket (restart db) (either mempty stop) $
   either (pure . Left) (fmap Right . f)
 
 -- | Attempt to create a 'Config' from a 'Client.Options'. Useful if you
---   want to create a database owned by a specific user you will also login
---   with among other use cases.
+--   want to create a database
+--
+--   * owned by a specific user you will also login with
+--   * with a specific name (i.e. not the default name, "postgres")
+--
+--  among other use cases. Changing the 'connectionOptions' field of
+--  'Config' does /not/ achieve these results and you are likely to see
+--  unexpected behaviour if you try to.
 --
 --   @since 1.21.0.0
 optionsToDefaultConfig :: Client.Options -> Config

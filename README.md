@@ -6,7 +6,7 @@
 By default it will create a temporary data directory and
 a temporary directory for a UNIX domain socket for `postgres` to listen on.
 
-Here is an example using the expection safe 'with' function:
+Here is an example using the exception-safe 'with' function:
 
 ```haskell
 with $ \db -> bracket
@@ -60,4 +60,24 @@ Ubuntu's PostgreSQL installation does not put `initdb` on the PATH. We need to a
 $ sudo apt-get install postgresql-VERSION
 $ echo "export PATH=$PATH:/usr/lib/postgresql/VERSION/bin/" >> /home/ubuntu/.bashrc
 $ stack install tmp-postgres
+```
+
+## GitHub Actions
+
+Assuming you are using one of the standard workflow containers, simply add workflow steps which install postgresql as above.  For example,
+
+``` yaml
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: "Install postgresql"
+        run: "sudo apt-get update && sudo apt-get install postgresql-10"
+
+      # ...
+
+      - name: "Run test"
+        run: |
+          export PATH=$PATH:/usr/lib/postgresql/10/bin
+          stack test
 ```
